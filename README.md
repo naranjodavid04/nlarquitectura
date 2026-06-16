@@ -6,7 +6,7 @@ animaciones de scroll y optimización automática de imágenes.
 
 ---
 
-## 🚀 Cómo trabajar con el sitio
+## Cómo trabajar con el sitio
 
 Necesitas tener instalado **[Node.js](https://nodejs.org)** (versión 18 o superior).
 
@@ -28,7 +28,7 @@ actualiza solo.
 
 ---
 
-## 🏠 Cómo añadir un proyecto nuevo
+## Cómo añadir un proyecto nuevo
 
 Son 3 pasos. **No necesitas saber programar.**
 
@@ -73,7 +73,7 @@ de detalle. Si dejas un campo vacío (`""`), simplemente no se muestra.
 
 ---
 
-## 📞 Cómo cambiar los datos de contacto
+## Cómo cambiar los datos de contacto
 
 Todo está en un solo archivo: **`src/site.ts`**
 
@@ -84,16 +84,16 @@ Todo está en un solo archivo: **`src/site.ts`**
 
 ---
 
-## ✏️ Cómo cambiar los textos
+## Cómo cambiar los textos
 
 - Textos de la interfaz (menú, botones, secciones, biografía, servicios):
   - Español → `src/i18n/es.ts`
   - Inglés → `src/i18n/en.ts`
-  - ⚠️ Si cambias un texto en uno, cámbialo también en el otro para que coincidan.
+  - Si cambias un texto en uno, cámbialo también en el otro para que coincidan.
 
 ---
 
-## 🎨 Logo
+## Logo
 
 El logo se procesó automáticamente a versiones transparentes (dorado y marfil) para que luzca
 sobre el fondo oscuro. Están en `src/assets/marca/`. Si en el futuro cambias el logo original,
@@ -107,7 +107,7 @@ Eso regenera los logos, el favicon y la imagen para compartir en redes.
 
 ---
 
-## 🌐 Cómo publicar el sitio (gratis)
+## Cómo publicar el sitio (gratis)
 
 La forma más fácil es **[Netlify](https://www.netlify.com)** o **[Vercel](https://vercel.com)**:
 
@@ -122,7 +122,7 @@ La forma más fácil es **[Netlify](https://www.netlify.com)** o **[Vercel](http
 
 ---
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```
 src/
