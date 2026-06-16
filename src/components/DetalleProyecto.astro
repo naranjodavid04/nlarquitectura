@@ -1,0 +1,246 @@
+---
+import { Image } from "astro:assets";
+import ProjectGallery from "./ProjectGallery.astro";
+import type { Proyecto } from "../data/proyectos";
+import { imagenProyecto } from "../data/proyectos";
+import type { Idioma } from "../i18n/utils";
+import { traducciones, ruta } from "../i18n/utils";
+import { whatsappUrl } from "../site";
+
+interface Props {
+  proyecto: Proyecto;
+  lang: Idioma;
+  anterior: Proyecto | null;
+  siguiente: Proyecto | null;
+}
+
+const { proyecto, lang, anterior, siguiente } = Astro.props;
+const t = traducciones(lang);
+const portada = imagenProyecto(proyecto.portada);
+
+const ficha = [
+  { etq: t.detalle.ubicacion, valor: proyecto.ubicacion[lang] },
+  { etq: t.detalle.tipo, valor: proyecto.tipo[lang] },
+  { etq: t.detalle.area, valor: proyecto.area[lang] },
+  { etq: t.detalle.anio, valor: proyecto.anio },
+].filter((f) => f.valor);
+---
+
+<article class="proyecto">
+  <!-- Portada -->
+  <header class="portada">
+    <div class="portada__fondo" data-parallax="8">
+      <Image
+        src={portada}
+        alt={proyecto.titulo[lang]}
+        class="portada__img"
+        data-parallax-medio
+        transition:name={`media-${proyecto.slug}`}
+        loading="eager"
+        fetchpriority="high"
+        widths={[800, 1200, 1600]}
+        sizes="100vw"
+      />
+      <div class="portada__velo"></div>
+    </div>
+    <div class="contenedor portada__contenido">
+      <a href={ruta("/#proyectos", lang)} class="enlace portada__volver">
+        <span class="flecha" aria-hidden="true">←</span>
+        {t.detalle.volver}
+      </a>
+      <h1 class="portada__titulo">{proyecto.titulo[lang]}</h1>
+      <p class="portada__meta">{[proyecto.tipo[lang], proyecto.ubicacion[lang]].filter(Boolean).join(" · ")}</p>
+    </div>
+  </header>
+
+  <!-- Ficha + descripción -->
+  <section class="seccion resumen">
+    <div class="contenedor resumen__grid">
+      <dl class="ficha" data-reveal>
+        {
+          ficha.map((f) => (
+            <div class="ficha__fila">
+              <dt>{f.etq}</dt>
+              <dd>{f.valor}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <div class="resumen__desc">
+        <p data-reveal>{proyecto.descripcion[lang]}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galería -->
+  <section class="seccion-galeria">
+    <div class="contenedor">
+      <ProjectGallery imagenes={proyecto.imagenes} titulo={proyecto.titulo[lang]} />
+    </div>
+  </section>
+
+  <!-- Navegación entre proyectos -->
+  <nav class="navega contenedor" aria-label={lang === "es" ? "Proyectos" : "Projects"}>
+    {anterior ? (
+      <a href={ruta(`/proyectos/${anterior.slug}`, lang)} class="navega__item navega__item--ant">
+        <span class="navega__etq"><span class="flecha" aria-hidden="true">←</span> {t.detalle.anterior}</span>
+        <span class="navega__nombre">{anterior.titulo[lang]}</span>
+      </a>
+    ) : <span />}
+    {siguiente ? (
+      <a href={ruta(`/proyectos/${siguiente.slug}`, lang)} class="navega__item navega__item--sig">
+        <span class="navega__etq">{t.detalle.siguiente} <span class="flecha" aria-hidden="true">→</span></span>
+        <span class="navega__nombre">{siguiente.titulo[lang]}</span>
+      </a>
+    ) : <span />}
+  </nav>
+
+  <!-- CTA -->
+  <section class="seccion cta">
+    <div class="contenedor cta__interior" data-reveal>
+      <h2 class="cta__titulo">{t.detalle.interesado}</h2>
+      <a href={whatsappUrl()} target="_blank" rel="noopener" class="boton boton--oro">
+        {t.detalle.interesadoCta}
+        <span class="flecha" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+</article>
+
+<style>
+  /* Portada */
+  .portada {
+    position: relative;
+    min-height: 86svh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .portada__fondo {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+  }
+  .portada__img {
+    width: 100%;
+    height: 116%;
+    object-fit: cover;
+  }
+  .portada__velo {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 9, 8, 0.9), rgba(10, 9, 8, 0.2) 55%, rgba(10, 9, 8, 0.5));
+  }
+  .portada__contenido {
+    width: 100%;
+    padding-bottom: clamp(3rem, 8vh, 6rem);
+    padding-top: 7rem;
+  }
+  .portada__volver {
+    margin-bottom: 1.8rem;
+  }
+  .portada__titulo {
+    font-size: var(--t-h1);
+  }
+  .portada__meta {
+    margin-top: 1rem;
+    font-family: var(--fuente-display);
+    font-size: var(--t-pequeno);
+    letter-spacing: 0.06em;
+    color: var(--dorado);
+  }
+
+  /* Resumen */
+  .resumen__grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.4fr;
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+  .ficha {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    align-self: start;
+  }
+  .ficha__fila {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    border-top: 1px solid var(--linea);
+    padding-top: 1.1rem;
+  }
+  .ficha__fila dt {
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--humo-tenue);
+  }
+  .ficha__fila dd {
+    font-family: var(--fuente-display);
+    font-size: var(--t-cuerpo);
+    color: var(--marfil);
+  }
+  .resumen__desc p {
+    font-size: var(--t-cuerpo-lg);
+    color: var(--marfil);
+    max-width: 60ch;
+  }
+
+  .seccion-galeria {
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  /* Navegación */
+  .navega {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    border-top: 1px solid var(--linea);
+  }
+  .navega__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .navega__item--sig {
+    text-align: right;
+    margin-left: auto;
+  }
+  .navega__etq {
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--humo);
+  }
+  .navega__nombre {
+    font-family: var(--fuente-display);
+    font-size: var(--t-h3);
+    font-weight: 600;
+    color: var(--marfil);
+    transition: color 0.3s var(--ease);
+  }
+  .navega__item:hover .navega__nombre {
+    color: var(--dorado);
+  }
+
+  /* CTA */
+  .cta {
+    border-top: 1px solid var(--linea);
+    background: var(--carbon);
+    text-align: center;
+  }
+  .cta__titulo {
+    font-size: clamp(1.6rem, 1rem + 2.4vw, 2.8rem);
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 760px) {
+    .resumen__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+import Base from "../layouts/Base.astro";
+import Logo from "../components/Logo.astro";
+---
+
+<Base title="404 · NL Arquitectura & Construcción">
+  <section class="error">
+    <div class="contenedor error__interior">
+      <Logo variante="mark" color="oro" class="error__logo" alt="NL" loading="eager" />
+      <p class="error__codigo serif">404</p>
+      <h1 class="error__titulo">Página no encontrada</h1>
+      <p class="error__texto texto-apagado">
+        La página que buscas no existe o cambió de lugar.<br />
+        <span lang="en">The page you are looking for doesn’t exist.</span>
+      </p>
+      <div class="error__acciones">
+        <a href="/" class="boton boton--oro">Volver al inicio</a>
+        <a href="/en/" class="boton boton--linea">Go to homepage</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .error {
+    min-height: 86svh;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding-block: 9rem 5rem;
+  }
+  .error__interior {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .error__interior :global(.error__logo) {
+    height: 56px;
+    width: auto;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+  }
+  .error__codigo {
+    font-size: clamp(4rem, 14vw, 9rem);
+    line-height: 1;
+    color: var(--dorado);
+  }
+  .error__titulo {
+    font-size: var(--t-h2);
+    margin: 1rem 0 1.2rem;
+  }
+  .error__texto {
+    max-width: 44ch;
+    margin-bottom: 2.4rem;
+  }
+  .error__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+</style>

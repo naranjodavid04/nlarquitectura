@@ -1,0 +1,90 @@
+---
+import "@fontsource-variable/playfair-display";
+import "@fontsource-variable/inter";
+import "../styles/global.css";
+
+import { ViewTransitions } from "astro:transitions";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { idiomaDeUrl, traducciones, urlOtroIdioma } from "../i18n/utils";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const lang = idiomaDeUrl(Astro.url);
+const t = traducciones(lang);
+
+const { title = t.meta.title, description = t.meta.description, image = "/og.jpg" } = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const urlEs = new URL(urlOtroIdioma(Astro.url, "es"), Astro.site).href;
+const urlEn = new URL(urlOtroIdioma(Astro.url, "en"), Astro.site).href;
+const ogImage = new URL(image, Astro.site).href;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="es" href={urlEs} />
+    <link rel="alternate" hreflang="en" href={urlEn} />
+    <link rel="alternate" hreflang="x-default" href={urlEs} />
+
+    <meta name="theme-color" content="#0a0908" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === "es" ? "es_CO" : "en_US"} />
+    <meta property="og:site_name" content="NL Arquitectura & Construcción" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <ViewTransitions />
+  </head>
+
+  <body>
+    <!-- Video de fondo global: fijo detrás de todo el contenido, su avance se
+         controla con el scroll de toda la página (ver iniciarVideoScrub en animations.ts). -->
+    <div class="fondo-video" aria-hidden="true" transition:persist>
+      <video
+        class="fondo-video__media"
+        data-fondo-media
+        data-src-scrub="/video/recorrido-scrub.mp4"
+        data-src-movil="/video/recorrido-scrub-movil.mp4"
+        poster="/video/recorrido-poster.jpg"
+        muted
+        playsinline
+        preload="none"></video>
+      <div class="fondo-video__velo"></div>
+    </div>
+
+    <div class="grano" aria-hidden="true"></div>
+    <a href="#contenido" class="solo-lectores">{lang === "es" ? "Saltar al contenido" : "Skip to content"}</a>
+
+    <Nav />
+
+    <main id="contenido">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      import "../scripts/animations.ts";
+    </script>
+  </body>
+</html>

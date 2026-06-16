@@ -1,0 +1,384 @@
+---
+import { Image } from "astro:assets";
+import Hero from "./Hero.astro";
+import Icono from "./Icono.astro";
+import ProjectCard from "./ProjectCard.astro";
+import { proyectosOrdenados } from "../data/proyectos";
+import { idiomaDeUrl, traducciones } from "../i18n/utils";
+import { sitio, whatsappUrl, correoUrl, whatsappLegible } from "../site";
+import daniel from "../assets/daniel.jpeg";
+
+const lang = idiomaDeUrl(Astro.url);
+const t = traducciones(lang);
+const proyectos = proyectosOrdenados();
+---
+
+<Hero />
+
+<!-- ENFOQUE / MANIFIESTO -->
+<section class="seccion intro">
+  <div class="contenedor intro__grid">
+    <h2 class="intro__titulo" data-reveal>{t.intro.titulo}</h2>
+    <p class="intro__parrafo" data-reveal style="--reveal-delay: 120ms">{t.intro.parrafo}</p>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section id="proyectos" class="seccion proyectos">
+  <div class="contenedor">
+    <header class="encabezado" data-reveal>
+      <h2 class="titulo-seccion">{t.proyectos.titulo}</h2>
+      <p class="encabezado__sub texto-apagado">{t.proyectos.sub}</p>
+    </header>
+    <div class="proyectos__grid">
+      {proyectos.map((p, i) => <ProjectCard proyecto={p} lang={lang} destacado={i === 0} />)}
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios" class="seccion servicios">
+  <div class="contenedor">
+    <div class="servicios__cabecera">
+      <h2 class="titulo-seccion" data-reveal>{t.servicios.titulo}</h2>
+      <p class="servicios__intro" data-reveal>{t.servicios.parrafo}</p>
+    </div>
+    <ul class="servicios__lista">
+      {
+        t.servicios.lista.map((s, i) => (
+          <li class="servicio" data-reveal style={`--reveal-delay: ${i * 55}ms`}>
+            <span class="servicio__icono"><Icono nombre={s.icono} /></span>
+            <h3 class="servicio__titulo">{s.titulo}</h3>
+            <p class="servicio__desc texto-apagado">{s.descripcion}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- ESTUDIO / SOBRE -->
+<section id="estudio" class="seccion estudio">
+  <div class="contenedor estudio__grid">
+    <div class="estudio__foto" data-reveal-img>
+      <Image src={daniel} alt={sitio.arquitecto} widths={[480, 720, 960]} sizes="(max-width: 860px) 100vw, 40vw" />
+    </div>
+    <div class="estudio__texto">
+      <h2 class="titulo-seccion" data-reveal>{t.sobre.titulo}</h2>
+      <p class="estudio__p" data-reveal>{t.sobre.parrafo1}</p>
+      <p class="estudio__p texto-apagado" data-reveal>{t.sobre.parrafo2}</p>
+      <dl class="estudio__datos" data-reveal>
+        {
+          t.sobre.datos.map((d) => (
+            <div class="estudio__dato">
+              <dt>{d.clave}</dt>
+              <dd>{d.valor}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto" class="seccion contacto">
+  <div class="contenedor contacto__interior" data-reveal>
+    <h2 class="contacto__titulo">{t.contacto.titulo}</h2>
+    <p class="contacto__parrafo texto-apagado">{t.contacto.parrafo}</p>
+
+    <div class="contacto__acciones">
+      <a href={whatsappUrl()} target="_blank" rel="noopener" class="boton boton--oro">
+        {t.contacto.whatsapp}
+        <span class="flecha" aria-hidden="true">→</span>
+      </a>
+      <a href={correoUrl()} class="boton boton--linea">{t.contacto.correo}</a>
+    </div>
+
+    <ul class="contacto__directo">
+      <li><span class="contacto__etq">WhatsApp</span><a href={whatsappUrl()} target="_blank" rel="noopener">{whatsappLegible()}</a></li>
+      <li><span class="contacto__etq">{lang === "es" ? "Correo" : "Email"}</span><a href={correoUrl()}>{sitio.correo}</a></li>
+      <li>
+        <span class="contacto__etq">Instagram</span>
+        {sitio.instagramActivo
+          ? <a href={sitio.instagramUrl} target="_blank" rel="noopener">{t.contacto.instagram}</a>
+          : <span class="contacto__inactivo">{t.contacto.instagramProximamente}</span>}
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Encabezado de sección: título + descriptor en una regla editorial */
+  .encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 0.8rem 2.5rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+    padding-bottom: 1.6rem;
+    border-bottom: 1px solid var(--linea);
+    /* Encabezado sobre el video de fondo: sombra sutil para legibilidad */
+    text-shadow: 0 1px 16px rgba(10, 9, 8, 0.55);
+  }
+  .encabezado__sub {
+    max-width: 34ch;
+    font-size: var(--t-pequeno);
+  }
+
+  /* --- Intro / manifiesto --- */
+  .intro__grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: clamp(2rem, 6vw, 5.5rem);
+    align-items: end;
+    /* Panel translúcido suave para legibilidad sobre el video de fondo */
+    background: rgba(20, 18, 14, 0.42);
+    backdrop-filter: blur(7px) saturate(120%);
+    -webkit-backdrop-filter: blur(7px) saturate(120%);
+    border: 1px solid var(--linea);
+    border-radius: var(--radio-lg);
+    padding: clamp(1.8rem, 4vw, 3.2rem);
+  }
+  .intro__titulo {
+    font-family: var(--fuente-serif);
+    font-size: clamp(2rem, 1.2rem + 3vw, 3.6rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    max-width: 16ch;
+    text-wrap: balance;
+  }
+  .intro__parrafo {
+    font-size: var(--t-cuerpo-lg);
+    max-width: 52ch;
+    color: var(--marfil);
+    opacity: 0.88;
+    line-height: 1.7;
+  }
+
+  /* --- Proyectos (grilla bento) --- */
+  .proyectos__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.2rem, 2.2vw, 2rem);
+    align-items: start;
+  }
+  @media (max-width: 1000px) {
+    .proyectos__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 640px) {
+    .proyectos__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* --- Servicios --- */
+  .servicios {
+    background: rgba(20, 18, 14, 0.55);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    border-block: 1px solid var(--linea);
+  }
+  .servicios__cabecera {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: end;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .servicios__intro {
+    font-size: var(--t-cuerpo-lg);
+    max-width: 42ch;
+    color: var(--marfil);
+    opacity: 0.85;
+    align-self: end;
+  }
+  .servicios__lista {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--linea);
+    border-left: 1px solid var(--linea);
+  }
+  .servicio {
+    border-right: 1px solid var(--linea);
+    border-bottom: 1px solid var(--linea);
+    padding: clamp(1.8rem, 2.6vw, 2.8rem);
+    transition: background-color 0.5s var(--ease-out);
+  }
+  .servicio__icono {
+    display: inline-flex;
+    color: var(--dorado);
+    margin-bottom: 1.5rem;
+  }
+  .servicio__icono :global(svg) {
+    width: 30px;
+    height: 30px;
+    transition: transform 0.45s var(--ease-out);
+  }
+  .servicio__titulo {
+    font-size: var(--t-h3);
+    margin-bottom: 0.8rem;
+  }
+  .servicio__desc {
+    max-width: 40ch;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .servicio:hover {
+      background-color: rgba(201, 168, 106, 0.04);
+    }
+    .servicio:hover .servicio__icono :global(svg) {
+      transform: translateY(-4px) scale(1.06);
+    }
+  }
+
+  /* --- Estudio --- */
+  .estudio__grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1fr;
+    gap: clamp(2rem, 6vw, 5.5rem);
+    align-items: center;
+  }
+  .estudio__foto {
+    overflow: hidden;
+    border-radius: var(--radio-lg);
+    aspect-ratio: 4 / 5;
+  }
+  .estudio__foto :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .estudio__texto {
+    /* Panel translúcido suave para legibilidad sobre el video de fondo */
+    background: rgba(20, 18, 14, 0.42);
+    backdrop-filter: blur(7px) saturate(120%);
+    -webkit-backdrop-filter: blur(7px) saturate(120%);
+    border: 1px solid var(--linea);
+    border-radius: var(--radio-lg);
+    padding: clamp(1.6rem, 3.5vw, 2.8rem);
+  }
+  .estudio__texto .eyebrow {
+    margin-bottom: 1.2rem;
+  }
+  .estudio__texto .titulo-seccion {
+    margin-bottom: 1.8rem;
+  }
+  .estudio__p {
+    margin-bottom: 1.2rem;
+    max-width: 54ch;
+  }
+  .estudio__datos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem 3rem;
+    margin-top: 2.4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--linea);
+  }
+  .estudio__dato dt {
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--humo-tenue);
+    margin-bottom: 0.4rem;
+  }
+  .estudio__dato dd {
+    font-family: var(--fuente-display);
+    font-size: var(--t-pequeno);
+    color: var(--marfil);
+  }
+
+  /* --- Contacto --- */
+  .contacto {
+    text-align: center;
+  }
+  .contacto__interior {
+    max-width: 60ch;
+    margin-inline: auto;
+    /* Panel translúcido suave para legibilidad sobre el video de fondo */
+    background: rgba(20, 18, 14, 0.42);
+    backdrop-filter: blur(7px) saturate(120%);
+    -webkit-backdrop-filter: blur(7px) saturate(120%);
+    border: 1px solid var(--linea);
+    border-radius: var(--radio-lg);
+    padding: clamp(2rem, 5vw, 3.5rem);
+  }
+  .contacto__titulo {
+    font-size: var(--t-h1);
+    margin-block: 1.4rem 1.4rem;
+  }
+  .contacto__parrafo {
+    font-size: var(--t-cuerpo-lg);
+    margin-inline: auto;
+    max-width: 46ch;
+  }
+  .contacto__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2.6rem;
+  }
+  .contacto__directo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 3rem;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--linea);
+  }
+  .contacto__directo li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .contacto__etq {
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--humo-tenue);
+  }
+  .contacto__directo a {
+    color: var(--marfil);
+    transition: color 0.3s var(--ease);
+  }
+  .contacto__directo a:hover {
+    color: var(--dorado);
+  }
+  .contacto__inactivo {
+    color: var(--humo-tenue);
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 1000px) {
+    .servicios__lista {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 860px) {
+    .intro__grid,
+    .servicios__cabecera,
+    .estudio__grid {
+      grid-template-columns: 1fr;
+    }
+    .servicios__cabecera {
+      align-items: start;
+    }
+    .estudio__foto {
+      aspect-ratio: 3 / 4;
+      max-width: 420px;
+    }
+  }
+  @media (max-width: 600px) {
+    .servicios__lista {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

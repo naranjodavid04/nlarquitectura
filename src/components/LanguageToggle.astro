@@ -1,0 +1,38 @@
+---
+import { idiomaDeUrl, urlOtroIdioma } from "../i18n/utils";
+
+const lang = idiomaDeUrl(Astro.url);
+const aEs = urlOtroIdioma(Astro.url, "es");
+const aEn = urlOtroIdioma(Astro.url, "en");
+---
+
+<div class="toggle" role="group" aria-label="Idioma / Language">
+  <a href={aEs} class:list={["toggle__op", { activo: lang === "es" }]} aria-current={lang === "es" ? "true" : undefined}>ES</a>
+  <span class="toggle__sep" aria-hidden="true">/</span>
+  <a href={aEn} class:list={["toggle__op", { activo: lang === "en" }]} aria-current={lang === "en" ? "true" : undefined}>EN</a>
+</div>
+
+<style>
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+  }
+  .toggle__op {
+    color: var(--humo);
+    transition: color 0.3s var(--ease);
+  }
+  .toggle__op:hover {
+    color: var(--marfil);
+  }
+  .toggle__op.activo {
+    color: var(--dorado);
+  }
+  .toggle__sep {
+    color: var(--humo-tenue);
+  }
+</style>

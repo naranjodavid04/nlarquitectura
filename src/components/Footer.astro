@@ -1,0 +1,134 @@
+---
+import Logo from "./Logo.astro";
+import { idiomaDeUrl, traducciones, ruta } from "../i18n/utils";
+import { sitio, whatsappUrl, correoUrl, whatsappLegible } from "../site";
+
+const lang = idiomaDeUrl(Astro.url);
+const t = traducciones(lang);
+const home = ruta("/", lang);
+const anio = new Date().getFullYear();
+
+const navegacion = [
+  { texto: t.nav.proyectos, href: `${home === "/" ? "" : home}/#proyectos` },
+  { texto: t.nav.servicios, href: `${home === "/" ? "" : home}/#servicios` },
+  { texto: t.nav.sobre, href: `${home === "/" ? "" : home}/#estudio` },
+  { texto: t.nav.contacto, href: `${home === "/" ? "" : home}/#contacto` },
+];
+---
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__grid">
+      <div class="pie__marca">
+        <Logo variante="lockup" color="ivory" class="pie__logo" alt="NL Arquitectura & Construcción" />
+        <p class="pie__lema texto-apagado">{t.footer.ubicacion}</p>
+      </div>
+
+      <nav class="pie__col" aria-label={t.footer.navegacion}>
+        <h3 class="pie__titulo">{t.footer.navegacion}</h3>
+        <ul>
+          {navegacion.map((e) => <li><a href={e.href} class="pie__enlace">{e.texto}</a></li>)}
+        </ul>
+      </nav>
+
+      <div class="pie__col">
+        <h3 class="pie__titulo">{t.footer.contacto}</h3>
+        <ul>
+          <li><a href={whatsappUrl()} target="_blank" rel="noopener" class="pie__enlace">WhatsApp · {whatsappLegible()}</a></li>
+          <li><a href={correoUrl()} class="pie__enlace">{sitio.correo}</a></li>
+          <li>
+            {sitio.instagramActivo
+              ? <a href={sitio.instagramUrl} target="_blank" rel="noopener" class="pie__enlace">Instagram</a>
+              : <span class="pie__enlace pie__enlace--inactivo">{t.contacto.instagramProximamente}</span>}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pie__base">
+      <p>© {anio} {sitio.nombre}. {t.footer.derechos}</p>
+      <p class="pie__credito">{t.footer.rol} · {sitio.arquitecto}</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .pie {
+    border-top: 1px solid var(--linea);
+    padding-block: clamp(3.5rem, 7vw, 6rem) 2.5rem;
+    background: rgba(20, 18, 14, 0.6);
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+  }
+  .pie__grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+  .pie__marca :global(.pie__logo) {
+    width: clamp(180px, 22vw, 240px);
+    height: auto;
+  }
+  .pie__lema {
+    margin-top: 1.4rem;
+    font-size: var(--t-pequeno);
+    max-width: 32ch;
+  }
+  .pie__titulo {
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dorado);
+    margin-bottom: 1.4rem;
+  }
+  .pie__col ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .pie__enlace {
+    color: var(--humo);
+    font-size: var(--t-pequeno);
+    transition: color 0.3s var(--ease);
+  }
+  a.pie__enlace:hover {
+    color: var(--marfil);
+  }
+  .pie__enlace--inactivo {
+    opacity: 0.55;
+    cursor: default;
+  }
+  .pie__base {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--linea);
+    font-size: var(--t-micro);
+    letter-spacing: 0.04em;
+    color: var(--humo-tenue);
+  }
+
+  @media (max-width: 760px) {
+    .pie__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .pie__marca {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (max-width: 460px) {
+    .pie__grid {
+      grid-template-columns: 1fr;
+    }
+    .pie__base {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

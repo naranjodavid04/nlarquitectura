@@ -1,0 +1,230 @@
+---
+import Logo from "./Logo.astro";
+import LanguageToggle from "./LanguageToggle.astro";
+import { idiomaDeUrl, traducciones, ruta } from "../i18n/utils";
+import { whatsappUrl } from "../site";
+
+const lang = idiomaDeUrl(Astro.url);
+const t = traducciones(lang);
+const home = ruta("/", lang);
+
+const enlaces = [
+  { texto: t.nav.proyectos, href: `${home === "/" ? "" : home}/#proyectos` },
+  { texto: t.nav.servicios, href: `${home === "/" ? "" : home}/#servicios` },
+  { texto: t.nav.sobre, href: `${home === "/" ? "" : home}/#estudio` },
+  { texto: t.nav.contacto, href: `${home === "/" ? "" : home}/#contacto` },
+];
+---
+
+<header id="nav" class="nav" data-nav>
+  <div class="nav__interior contenedor">
+    <a href={home} class="nav__marca" aria-label={`NL Arquitectura & Construcción — ${t.nav.inicio}`}>
+      <Logo variante="mark" color="oro" loading="eager" class="nav__logo" alt="NL" />
+      <span class="nav__nombre">NL <span class="nav__amp">Arquitectura &amp; Construcción</span></span>
+    </a>
+
+    <nav class="nav__enlaces" aria-label={lang === "es" ? "Principal" : "Main"}>
+      {enlaces.map((e) => <a href={e.href} class="nav__enlace">{e.texto}</a>)}
+    </nav>
+
+    <div class="nav__derecha">
+      <LanguageToggle />
+      <a href={whatsappUrl()} target="_blank" rel="noopener" class="boton boton--oro nav__cta">
+        {t.nav.cta}
+      </a>
+      <button class="nav__hamburguesa" data-menu-boton aria-label="Menú" aria-expanded="false" aria-controls="menu-movil">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Menú móvil -->
+  <div id="menu-movil" class="menu" data-menu hidden>
+    <nav class="menu__enlaces" aria-label={lang === "es" ? "Móvil" : "Mobile"}>
+      {enlaces.map((e) => <a href={e.href} class="menu__enlace" data-menu-cerrar>{e.texto}</a>)}
+    </nav>
+    <div class="menu__pie">
+      <LanguageToggle />
+      <a href={whatsappUrl()} target="_blank" rel="noopener" class="boton boton--oro" data-menu-cerrar>{t.nav.cta}</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    transition:
+      background-color 0.5s var(--ease),
+      backdrop-filter 0.5s var(--ease),
+      border-color 0.5s var(--ease);
+    border-bottom: 1px solid transparent;
+  }
+  .nav.desplazado {
+    background-color: rgba(10, 9, 8, 0.72);
+    backdrop-filter: blur(14px) saturate(120%);
+    border-bottom-color: var(--linea);
+  }
+  .nav__interior {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    height: clamp(64px, 8vh, 84px);
+  }
+
+  .nav__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+  .nav__marca :global(.nav__logo) {
+    height: clamp(28px, 4vw, 34px);
+    width: auto;
+  }
+  .nav__nombre {
+    font-family: var(--fuente-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: var(--marfil);
+    line-height: 1;
+  }
+  .nav__amp {
+    display: inline-block;
+    font-weight: 400;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--humo);
+    margin-left: 0.1rem;
+  }
+
+  .nav__enlaces {
+    display: flex;
+    align-items: center;
+    gap: clamp(1.2rem, 2.5vw, 2.4rem);
+  }
+  .nav__enlace {
+    position: relative;
+    font-family: var(--fuente-display);
+    font-size: 0.82rem;
+    font-weight: 450;
+    letter-spacing: 0.05em;
+    color: var(--marfil);
+    padding-block: 0.4rem;
+    transition: color 0.3s var(--ease);
+  }
+  .nav__enlace::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--dorado);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s var(--ease);
+  }
+  .nav__enlace:hover {
+    color: var(--dorado);
+  }
+  .nav__enlace:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .nav__derecha {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 1.6rem);
+  }
+  .nav__cta {
+    padding: 0.7em 1.3em;
+    font-size: 0.78rem;
+  }
+
+  .nav__hamburguesa {
+    display: none;
+    width: 44px;
+    height: 44px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .nav__hamburguesa span {
+    display: block;
+    width: 24px;
+    height: 1.5px;
+    background: var(--marfil);
+    transition: transform 0.4s var(--ease), opacity 0.3s var(--ease);
+  }
+  .nav.menu-abierto .nav__hamburguesa span:first-child {
+    transform: translateY(3.75px) rotate(45deg);
+  }
+  .nav.menu-abierto .nav__hamburguesa span:last-child {
+    transform: translateY(-3.75px) rotate(-45deg);
+  }
+
+  /* Menú móvil */
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--negro);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3rem;
+    padding: var(--margen-pagina);
+    opacity: 0;
+    transition: opacity 0.45s var(--ease);
+  }
+  .menu[hidden] {
+    display: none;
+  }
+  .nav.menu-abierto .menu {
+    opacity: 1;
+  }
+  .menu__enlaces {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+  .menu__enlace {
+    font-family: var(--fuente-display);
+    font-size: clamp(2rem, 9vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--marfil);
+  }
+  .menu__enlace:hover {
+    color: var(--dorado);
+  }
+  .menu__pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--linea);
+  }
+
+  @media (max-width: 920px) {
+    .nav__enlaces,
+    .nav__cta {
+      display: none;
+    }
+    .nav__hamburguesa {
+      display: flex;
+    }
+  }
+  @media (max-width: 560px) {
+    .nav__amp {
+      display: none;
+    }
+  }
+</style>

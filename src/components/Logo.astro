@@ -1,0 +1,34 @@
+---
+import { Image } from "astro:assets";
+import lockupIvory from "../assets/marca/logo-lockup-ivory.png";
+import lockupOro from "../assets/marca/logo-lockup-oro.png";
+import markOro from "../assets/marca/logo-mark-oro.png";
+import markIvory from "../assets/marca/logo-mark-ivory.png";
+
+interface Props {
+  variante?: "lockup" | "mark";
+  color?: "oro" | "ivory";
+  alt?: string;
+  class?: string;
+  loading?: "eager" | "lazy";
+}
+
+const {
+  variante = "mark",
+  color = "oro",
+  alt = "NL Arquitectura & Construcción",
+  class: clase,
+  loading = "lazy",
+} = Astro.props;
+
+const fuentes = {
+  "lockup-ivory": lockupIvory,
+  "lockup-oro": lockupOro,
+  "mark-oro": markOro,
+  "mark-ivory": markIvory,
+} as const;
+
+const img = fuentes[`${variante}-${color}` as keyof typeof fuentes];
+---
+
+<Image src={img} alt={alt} class={clase} loading={loading} densities={[1, 2]} />

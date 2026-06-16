@@ -1,0 +1,160 @@
+---
+import { idiomaDeUrl, traducciones, ruta } from "../i18n/utils";
+import { whatsappUrl } from "../site";
+
+const lang = idiomaDeUrl(Astro.url);
+const t = traducciones(lang);
+---
+
+<section class="hero" data-hero>
+  <!-- El fondo es el video global (Base.astro); este velo local refuerza el wordmark. -->
+  <div class="hero__velo" aria-hidden="true"></div>
+
+  <div class="hero__contenido contenedor">
+    <p class="eyebrow hero__eyebrow" data-hero-item>{t.hero.lugar}</p>
+
+    <h1 class="hero__wordmark" data-hero-item>
+      <span class="hero__wm-blanco">NL</span> <span class="hero__wm-oro"
+        >Arquitectura <span class="hero__wm-amp">&amp;</span> Construcción</span
+      >
+    </h1>
+
+    <p class="hero__lema" data-hero-item>{t.hero.lema}</p>
+    <p class="hero__credito" data-hero-item>{t.hero.arquitecto}</p>
+
+    <div class="hero__acciones" data-hero-item>
+      <a href={ruta("/#proyectos", lang)} class="boton boton--claro">
+        {t.hero.verProyectos}
+        <span class="flecha" aria-hidden="true">→</span>
+      </a>
+      <a href={whatsappUrl()} target="_blank" rel="noopener" class="boton boton--oro">
+        {t.hero.contactar}
+      </a>
+    </div>
+  </div>
+
+  <a href={ruta("/#proyectos", lang)} class="hero__scroll" aria-label={t.hero.scroll}>
+    <span>{t.hero.scroll}</span>
+    <span class="hero__scroll-linea" aria-hidden="true"></span>
+  </a>
+</section>
+
+<style>
+  /* Sección normal: el fondo lo aporta el video global (Base.astro). */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* Velo local: oscurece el pie del hero para asentar el wordmark sobre el video. */
+  .hero__velo {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      linear-gradient(to top, rgba(10, 9, 8, 0.85) 0%, rgba(10, 9, 8, 0.2) 45%, transparent 70%),
+      radial-gradient(120% 80% at 20% 95%, rgba(10, 9, 8, 0.55), transparent 60%);
+  }
+
+  .hero__contenido {
+    width: 100%;
+    padding-bottom: clamp(5rem, 12vh, 9rem);
+    padding-top: 8rem;
+  }
+  .hero__eyebrow {
+    margin-bottom: 1.6rem;
+  }
+
+  .hero__wordmark {
+    font-family: var(--fuente-serif);
+    font-weight: 600;
+    font-size: clamp(2.6rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    max-width: 17ch;
+  }
+  .hero__wm-blanco {
+    color: var(--marfil);
+  }
+  .hero__wm-oro {
+    color: var(--dorado);
+  }
+  .hero__wm-amp {
+    font-style: italic;
+    font-weight: 500;
+    padding: 0 0.02em;
+  }
+
+  .hero__lema {
+    margin-top: 2rem;
+    max-width: 46ch;
+    font-size: var(--t-cuerpo-lg);
+    color: var(--marfil);
+    opacity: 0.92;
+  }
+  .hero__credito {
+    margin-top: 1rem;
+    font-family: var(--fuente-display);
+    font-size: var(--t-pequeno);
+    letter-spacing: 0.08em;
+    color: var(--dorado);
+  }
+
+  .hero__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2.6rem;
+  }
+
+  .hero__scroll {
+    position: absolute;
+    right: var(--margen-pagina);
+    bottom: clamp(5rem, 12vh, 9rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--humo);
+    writing-mode: vertical-rl;
+  }
+  .hero__scroll-linea {
+    width: 1px;
+    height: 56px;
+    background: linear-gradient(var(--dorado), transparent);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero__scroll-linea::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--dorado);
+    animation: scrollCue 2.2s var(--ease) infinite;
+  }
+  @keyframes scrollCue {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  @media (max-width: 920px) {
+    .hero__scroll {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__scroll-linea::after {
+      animation: none;
+    }
+  }
+</style>

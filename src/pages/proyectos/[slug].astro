@@ -1,0 +1,26 @@
+---
+import Base from "../../layouts/Base.astro";
+import DetalleProyecto from "../../components/DetalleProyecto.astro";
+import { proyectosReales } from "../../data/proyectos";
+
+export function getStaticPaths() {
+  const lista = proyectosReales();
+  return lista.map((proyecto, i) => ({
+    params: { slug: proyecto.slug },
+    props: {
+      proyecto,
+      anterior: lista[i - 1] ?? null,
+      siguiente: lista[i + 1] ?? null,
+    },
+  }));
+}
+
+const { proyecto, anterior, siguiente } = Astro.props;
+const lang = "es" as const;
+const titulo = `${proyecto.titulo[lang]} · NL Arquitectura & Construcción`;
+const descripcion = proyecto.descripcion[lang].slice(0, 155);
+---
+
+<Base title={titulo} description={descripcion}>
+  <DetalleProyecto proyecto={proyecto} lang={lang} anterior={anterior} siguiente={siguiente} />
+</Base>

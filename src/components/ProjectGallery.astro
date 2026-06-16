@@ -1,0 +1,53 @@
+---
+import { Image } from "astro:assets";
+import { imagenProyecto } from "../data/proyectos";
+
+interface Props {
+  imagenes: string[];
+  titulo: string;
+}
+
+const { imagenes, titulo } = Astro.props;
+---
+
+<div class="galeria">
+  {
+    imagenes.map((ruta, i) => (
+      <figure class="galeria__item" data-reveal-img>
+        <div class="galeria__marco" data-parallax="6">
+          <Image
+            src={imagenProyecto(ruta)}
+            alt={`${titulo} — ${i + 1}`}
+            class="galeria__img"
+            data-parallax-medio
+            widths={[800, 1200, 1600]}
+            sizes="(max-width: 1100px) 100vw, 1100px"
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        </div>
+      </figure>
+    ))
+  }
+</div>
+
+<style>
+  .galeria {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+  }
+  .galeria__item {
+    margin: 0;
+  }
+  .galeria__marco {
+    overflow: hidden;
+    border-radius: var(--radio-lg);
+    background: var(--carbon-2);
+  }
+  .galeria__img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transform: scale(1.06);
+  }
+</style>

@@ -1,0 +1,191 @@
+---
+import { Image } from "astro:assets";
+import type { Proyecto } from "../data/proyectos";
+import { imagenProyecto } from "../data/proyectos";
+import type { Idioma } from "../i18n/utils";
+import { traducciones, ruta } from "../i18n/utils";
+
+interface Props {
+  proyecto: Proyecto;
+  lang: Idioma;
+  destacado?: boolean;
+}
+
+const { proyecto, lang, destacado = false } = Astro.props;
+const t = traducciones(lang);
+const esProximamente = proyecto.proximamente === true;
+const href = ruta(`/proyectos/${proyecto.slug}`, lang);
+const img = esProximamente ? null : imagenProyecto(proyecto.portada);
+---
+
+{
+  esProximamente ? (
+    <article class="pcard pcard--proximamente" class:list={{ "pcard--destacado": destacado }} data-reveal>
+      <div class="pcard__media pcard__media--vacio">
+        <span class="pcard__badge">{t.proyectos.proximamente}</span>
+      </div>
+      <div class="pcard__info">
+        <h3 class="pcard__titulo pcard__titulo--apagado">{proyecto.titulo[lang]}</h3>
+        <p class="pcard__resumen texto-apagado">{proyecto.resumen[lang]}</p>
+      </div>
+    </article>
+  ) : (
+    <article class="pcard" class:list={{ "pcard--destacado": destacado }} data-reveal>
+      <a href={href} class="pcard__media" data-reveal-img aria-label={proyecto.titulo[lang]}>
+        <Image
+          src={img!}
+          alt={proyecto.titulo[lang]}
+          class="pcard__img"
+          transition:name={`media-${proyecto.slug}`}
+          widths={[640, 960, 1280, 1600]}
+          sizes={destacado ? "(max-width: 1000px) 100vw, 62vw" : "(max-width: 1000px) 100vw, 32vw"}
+        />
+        <span class="pcard__overlay" />
+        <span class="pcard__ver">{t.proyectos.verProyecto}</span>
+      </a>
+      <div class="pcard__info">
+        {proyecto.anio && <span class="pcard__anio">{proyecto.anio}</span>}
+        <h3 class="pcard__titulo">
+          <a href={href}>{proyecto.titulo[lang]}</a>
+        </h3>
+        <p class="pcard__resumen texto-apagado">{proyecto.resumen[lang]}</p>
+      </div>
+    </article>
+  )
+}
+
+<style>
+  .pcard {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* El destacado ocupa dos columnas de la grilla */
+  .pcard--destacado {
+    grid-column: span 2;
+  }
+
+  /* --- Media --- */
+  .pcard__media {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radio-lg);
+    aspect-ratio: 4 / 3;
+    background: var(--carbon-2);
+  }
+  .pcard--destacado .pcard__media {
+    aspect-ratio: 16 / 10;
+  }
+  .pcard__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out);
+  }
+  .pcard__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10, 9, 8, 0.5), rgba(10, 9, 8, 0.05));
+    opacity: 0;
+    transition: opacity 0.5s var(--ease-out);
+  }
+  .pcard__ver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.96);
+    padding: 0.7em 1.4em;
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--marfil);
+    border: 1px solid rgba(237, 232, 224, 0.55);
+    backdrop-filter: blur(4px);
+    border-radius: var(--radio);
+    opacity: 0;
+    transition:
+      opacity 0.45s var(--ease-out),
+      transform 0.45s var(--ease-out);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pcard__media:hover .pcard__img {
+      transform: scale(1.05);
+    }
+    .pcard__media:hover .pcard__overlay {
+      opacity: 1;
+    }
+    .pcard__media:hover .pcard__ver {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  /* --- Placeholder "Próximamente" --- */
+  .pcard__media--vacio {
+    display: grid;
+    place-items: center;
+    background-color: var(--carbon-2);
+    background-image: repeating-linear-gradient(
+      135deg,
+      transparent 0 9px,
+      rgba(237, 232, 224, 0.022) 9px 10px
+    );
+    border: 1px solid var(--linea);
+  }
+  .pcard__badge {
+    padding: 0.55em 1.1em;
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--humo);
+    border: 1px solid var(--linea-fuerte);
+    border-radius: var(--radio);
+  }
+
+  /* --- Info --- */
+  .pcard__info {
+    padding-top: 1.3rem;
+    /* El texto cae sobre el video de fondo: sombra sutil para legibilidad */
+    text-shadow: 0 1px 16px rgba(10, 9, 8, 0.55);
+  }
+  .pcard__anio {
+    display: block;
+    font-family: var(--fuente-display);
+    font-size: var(--t-micro);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    color: var(--dorado);
+    margin-bottom: 0.7rem;
+  }
+  .pcard__titulo {
+    font-size: var(--t-h3);
+    margin-bottom: 0.55rem;
+  }
+  .pcard--destacado .pcard__titulo {
+    font-size: clamp(1.6rem, 1.1rem + 1.6vw, 2.4rem);
+  }
+  .pcard__titulo a {
+    transition: color 0.3s var(--ease);
+  }
+  .pcard__titulo a:hover {
+    color: var(--dorado);
+  }
+  .pcard__titulo--apagado {
+    color: var(--humo);
+  }
+  .pcard__resumen {
+    max-width: 52ch;
+    font-size: var(--t-pequeno);
+  }
+
+  @media (max-width: 640px) {
+    .pcard--destacado {
+      grid-column: span 1;
+    }
+  }
+</style>

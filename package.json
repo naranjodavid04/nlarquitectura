@@ -1,0 +1,27 @@
+{
+  "name": "daniel-naranjo-arquitecto",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Sitio web portafolio del arquitecto Daniel Naranjo López",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@fontsource-variable/playfair-display": "^5.2.8",
+    "astro": "^4.16.18",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@fontsource-variable/inter": "^5.1.1",
+    "@fontsource-variable/sora": "^5.1.1",
+    "@fontsource/cormorant-garamond": "^5.1.1",
+    "gsap": "^3.12.5",
+    "lenis": "^1.1.18",
+    "typescript": "^5.7.2"
+  }
+}
